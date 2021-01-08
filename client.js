@@ -135,8 +135,8 @@ class ResponseParser {
       if (char === ":") {
         this.current = this.WAITING_HEADER_SPACE;
       } else if (char === "\r") {
-        // this.current = this.WAITING_HEADER_BLOCK_END;
-        this.current = this.WAITING_BODY;
+        this.current = this.WAITING_HEADER_BLOCK_END;
+        // this.current = this.WAITING_BODY;
         if (this.headers["Transfer-Encoding"] === "chunked") {
           this.bodyParser = new TrunkedBodyParser();
         }
@@ -165,6 +165,8 @@ class ResponseParser {
         this.current = this.WAITING_BODY;
       }
     } else if (this.current === this.WAITING_BODY) {
+      // console.log("WAITING_BODY");
+      // console.log(char);
       this.bodyParser.receiveChar(char);
     }
   }
@@ -193,6 +195,8 @@ class TrunkedBodyParser {
     // console.log(char.charCodeAt(0));
     // console.log("Number(char)");
     // console.log(Number(char));
+    // console.log("this.current");
+    // console.log(this.current);
     if (this.current === this.WAITING_LENGTH) {
       if (char === "\r") {
         if (this.length === 0) {
@@ -203,6 +207,9 @@ class TrunkedBodyParser {
       } else {
         this.length *= 16;
         this.length += char.charCodeAt(0) - "0".charCodeAt(0);
+        // console.log("this.length");
+        // console.log(this.length);
+        // console.log(char);
         // this.length += Number(char);
         // console.log("this.length");
         // console.log(JSON.stringify(char));
@@ -225,6 +232,7 @@ class TrunkedBodyParser {
       // console.log(this.current);
       // console.log(this.length === 0);
       if (this.length === 0) {
+        // console.log("WAITING_NEW_LINE");
         this.current = this.WAITING_NEW_LINE;
       }
     } else if (this.current === this.WAITING_NEW_LINE) {
