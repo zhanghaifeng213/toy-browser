@@ -1,4 +1,5 @@
 const net = require("net");
+const parser = require("./parser.js");
 class Request {
   // method,url=host + port + path
   // body: k/v
@@ -53,16 +54,16 @@ ${this.bodyText}\r\n`;
       }
 
       connection.on("data", data => {
-        console.log("data.toString()");
-        console.log(data.toString());
-        console.log("----end----");
+        console.log("connection on data",data.toString());
+        // console.log(data.toString());
+        // console.log("----end----");
 
         parser.receive(data.toString());
-        console.log(parser.isFinished);
+        // console.log(parser.isFinished);
 
         if (parser.isFinished) {
-          console.log("isFinished");
-          console.log(parser.getResponse());
+          // console.log("isFinished");
+          // console.log(parser.getResponse());
           resolve(parser.getResponse());
         }
         connection.end();
@@ -209,7 +210,6 @@ class TrunkedBodyParser {
         this.length += char.charCodeAt(0) - "0".charCodeAt(0);
         // console.log("this.length");
         // console.log(this.length);
-        // console.log(char);
         // this.length += Number(char);
         // console.log("this.length");
         // console.log(JSON.stringify(char));
@@ -262,7 +262,8 @@ void (async function() {
     port: "8088",
     path: "/",
     headers: {
-      ["X-Foo2"]: "customed"
+      ["X-Foo2"]: "customed",
+      ["Content-Type"]: "application/json"
     },
     body: {
       name: "winter"
@@ -270,6 +271,7 @@ void (async function() {
   });
 
   let response = await request.send();
+  let dom = parser.parseHTML(response.body);
   // console.log(response);
 })();
 
