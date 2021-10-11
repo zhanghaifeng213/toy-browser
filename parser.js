@@ -12,6 +12,11 @@ function addCSSRules(text) {
   rules.push(...ast.stylesheet.rules)
 }
 
+function computeCSS(element){
+  console.log(rules)
+  console.log("compute CSS for element", element);
+}
+
 function emit(token) {
   // if(token.type=="text") {
   //   return
@@ -33,6 +38,8 @@ function emit(token) {
         });
       }
     }
+
+    computeCSS(element)
 
     top.children.push(element);
     element.parent = top;
