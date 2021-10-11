@@ -12,8 +12,72 @@ function addCSSRules(text) {
   rules.push(...ast.stylesheet.rules)
 }
 
+function match(element, selector) {
+
+}
+
 function computeCSS(element){
   var elements = stack.slice().reverse();
+
+  if (!element.computedStyle) {
+    // 给element增加computedStyle属性
+    element.computedStyle = {};
+  }
+
+  for (let rule of rules) {
+    // rule:
+    // { type: 'rule',
+    //   selectors: [ 'body div img' ],
+    //   declarations: [{
+    //       type: 'declaration',
+    //       property: 'width',
+    //       value: '30px',
+    //       position: [Object]
+    //     }, {
+    //       type: 'declaration',
+    //       property: 'background-color',
+    //       value: '#ff1111',
+    //       position: [Object]
+    //   }],
+    //   position: [Object]
+    // }
+
+    const selectorParts = rule.selectors[0].split(' ').reverse(); // reverse的原因是，css选择器是右向左逐个匹配
+    if (!match(element, selectorParts[0])) {
+      // 不匹配则跳出
+      continue;
+    }
+
+    let matched = false;
+    let j = 1;
+    for (let i = 0; i < elements.length; i++) {
+      // 逐个匹配
+      if (match(elements[i], selectorParts[j])) {
+        j++;
+      }
+    }
+    if (j >= selectorParts.length) {
+      matched = true;
+    }
+    if (matched) {
+      // 如果匹配到，我们要加入
+      console.log("Element",element,"matched rule",rule)
+      // const sp = specificity(rule.selectors[0]);
+      // const computedStyle = element.computedStyle;
+      // for (let declaration of rule.declarations) {
+      //   if (!computedStyle[declaration.property]) {
+      //     computedStyle[declaration.property] = {};
+      //   }
+      //   if (
+      //     !computedStyle[declaration.property].specificity ||
+      //     compara(computedStyle[declaration.property].specificity, sp) < 0
+      //   ) {
+      //     computedStyle[declaration.property].value = declaration.value;
+      //     computedStyle[declaration.property].specificity = sp;
+      //   }
+      // }
+    }
+  }
 }
 
 function emit(token) {
