@@ -13,8 +13,7 @@ function addCSSRules(text) {
 }
 
 function computeCSS(element){
-  console.log(rules)
-  console.log("compute CSS for element", element);
+  var elements = stack.slice().reverse();
 }
 
 function emit(token) {
