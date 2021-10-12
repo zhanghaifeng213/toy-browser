@@ -94,6 +94,14 @@ function computeCSS(element){
     }
     if (matched) {
       // 如果匹配到，我们要加入
+      const computedStyle = element.computedStyle;
+      for(let declaration of rule.declarations) {
+        if (!computedStyle[declaration.property]) {
+          computedStyle[declaration.property] = {};
+        }
+        // computedStyle[declaration.property] = declaration.value;
+        computedStyle[declaration.property].value = declaration.value;
+      }
       console.log("Element",element,"matched rule",rule)
       // const sp = specificity(rule.selectors[0]);
       // const computedStyle = element.computedStyle;
