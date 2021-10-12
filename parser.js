@@ -13,7 +13,40 @@ function addCSSRules(text) {
 }
 
 function match(element, selector) {
+  // element:
+  // {
+  //   type: 'element',
+  //   tagName: 'img',
+  //   children: [],
+  //   attributes: [ { name: 'isSelfClosing', value: true } ],
+  //   computedStyle: {}
+  // }
+  // selector: 'img'
 
+  if (!selector || !element.attributes) {
+    return false;
+  }
+  if (selector.charAt(0) === '#') {
+    const attr = element.attributes.filter(attr => attr.name === 'id')[0];
+    if (attr && attr.value === selector.replace('#', '')) {
+      return true;
+    }
+  } else if (selector.charAt(0) === '.') {
+    const attr = element.attributes.filter(attr => attr.name === 'class')[0];
+    if (attr && typeof attr.value === 'string') {
+      // 实现支持空格的class选择器
+      const classList = attr.value.split(' ');
+      if (classList.includes(selector.replace('.', ''))) {
+        return true;
+      }
+    }
+    // if (attr && attr.value === selector.replace('.', '')) {
+    //   return true;
+    // }
+  } else if (element.tagName === selector) {
+    return true;
+  }
+  return false;
 }
 
 function computeCSS(element){
